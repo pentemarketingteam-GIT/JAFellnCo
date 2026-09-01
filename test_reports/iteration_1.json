@@ -1,0 +1,30 @@
+{
+  "summary": "First full test after MVP build. Backend: all 9 pytest tests passed (health, auth me/logout, chat service view, chat intake capture, TTS, intake+contact persistence). Frontend: Home nav, AI Advisor link, Services/About/Contact pages load; Contact form submit works and shows success toast; /ai split layout renders with all required data-testids present (chat-input-field, chat-send-button, chat-voice-mic-button, google-login-button, chat-audio-toggle, dynamic-canvas-container). Chat -> 'Tell me about tax planning' correctly updates left canvas to Service view with Tax Planning content. Voice TTS endpoint returns valid audio/mpeg. Only observation: when user shares business+turnover in one message the LLM sometimes chooses canvas.view='quote' instead of 'intake', so the auto-filled intake form is not visible on-screen (intake state is preserved though). Recommend biasing the system prompt to prefer 'intake' whenever business_name/contact_name is captured before offering quote.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "AI intake auto-fill", "issue": "When the user provides business name + turnover in a single message, the LLM sometimes returns canvas.view='quote' instead of 'intake', so the intake form (with auto-filled fields and submit button) never appears in the DOM. Intake state is captured server-side and in React state, but user cannot submit intake via UI unless the LLM chooses intake view.", "affected_selectors": ["[data-testid='intake-form-business-name']", "[data-testid='intake-form-submit-button']"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Optional prompt tweak: strengthen the SYSTEM_PROMPT rule so that once business_name OR contact_name is captured, canvas.view MUST be 'intake' before offering 'quote' (current prompt says 'prefer' — LLM may skip to quote when turnover is also given).",
+    "Optional: on the frontend AIMode.jsx, when data.intake contains a non-empty business_name/contact_name and canvas.view is not 'intake', consider force-switching canvas to 'intake' at least once so the auto-filled form is shown to the user."
+  ],
+  "critical_code_review_comments": [
+    "server.py auth_me has an unused 'user=None' parameter that shadows the local variable — cosmetic only.",
+    "CORS uses allow_origins='*' with allow_credentials=True which some browsers reject when using cookies; auth relies on Bearer header from frontend so functional, but strictly speaking origins should be explicit for cookie flow.",
+    "No pagination/limit on db.chat_messages inserts — unbounded growth over time (acceptable for MVP).",
+    "extract_json fallback returns {'reply': text, canvas welcome, intake {}} which silently wipes intake on parse failure — consider preserving req.intake on fallback."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py", "/app/test_reports/iteration_1.json", "/app/test_reports/pytest/pytest_results.xml"],
+  "success_rate": {"backend": "100%", "frontend": "95%"},
+  "test_credentials": "No user credentials required. Test sessions are seeded directly via mongo (see backend_test.py fixture).",
+  "seed_data_creation": "Test users/sessions inserted into MongoDB test_database.users and user_sessions inside pytest fixtures; cleaned up automatically. Test intake/contact records prefixed with 'TEST_' and deleted after each test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend fully green. If prompt is tweaked to force intake view, retest by sending 'I run Acme Widgets Ltd, turnover £850k, my name is Jane, interested in cloud accounting' and asserting canvas.view=='intake' and intake-form-business-name value contains 'Acme'. Voice transcribe endpoint not tested (no audio sample) — considered low priority per request.",
+  "rca of the issue": "The intake auto-fill 'not visible' behaviour is not a bug in the wiring — DynamicCanvas.jsx correctly renders IntakeView when canvas.view==='intake' and the form binds to intake state passed from AIMode. Root cause: the LLM (claude-sonnet-4-6) sometimes returns view='quote' when turnover+service are supplied together, per the system-prompt rule that permits quote once turnover+service are known. Mitigation: strengthen prompt ordering (intake before quote once any client detail is captured) OR add a small UI heuristic in AIMode.jsx to prefer 'intake' view when intake has fields but the user hasn't yet submitted the form."
+}

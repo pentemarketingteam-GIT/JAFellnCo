@@ -1,0 +1,143 @@
+{
+  "project_name": "J A Fell & Co Chartered Accountants",
+  "archetype": "LUXURY & PERFORMANCE FINANCE (Deep Navy + Gold Accents)",
+  "firm_details": {
+    "name": "J A Fell & Co",
+    "qualification": "Chartered Accountants & Business Advisors",
+    "address": "40 Hoghton Street, Southport, PR9 0PQ, United Kingdom",
+    "phone": "01704 500299",
+    "email": "enquiries@jafell.co.uk",
+    "areas_served": "Southport, Merseyside, North West & UK Wide"
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Cormorant Garamond, serif",
+      "weights": ["font-semibold", "font-bold"],
+      "usage": "H1, H2, Section titles, Hero headers, Dynamic canvas key headers",
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-tight font-bold",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl tracking-tight leading-snug font-semibold",
+      "h3_card": "text-xl sm:text-2xl font-semibold",
+      "h4_sub": "text-lg sm:text-xl font-medium"
+    },
+    "body": {
+      "font_family": "Outfit, sans-serif",
+      "weights": ["font-normal", "font-medium", "font-semibold"],
+      "usage": "Body text, form inputs, buttons, chat messages, data labels",
+      "standard": "text-base leading-relaxed text-slate-300",
+      "small_label": "text-xs sm:text-sm tracking-wider uppercase font-medium text-amber-400/90"
+    },
+    "accents_mono": {
+      "font_family": "JetBrains Mono, monospace",
+      "usage": "Financial metrics, TURNOVER numbers, tax reference IDs, status pills"
+    }
+  },
+  "colors": {
+    "theme": "Dark Navy & Gold Executive Financial Luxury",
+    "primary_background": "#0B132B",
+    "secondary_background": "#1C2541",
+    "card_background": "rgba(28, 37, 65, 0.75)",
+    "elevated_surface": "#1F294D",
+    "borders": "rgba(212, 175, 55, 0.22)",
+    "borders_hover": "rgba(212, 175, 55, 0.55)",
+    "text_primary": "#F8FAFC",
+    "text_secondary": "#94A3B8",
+    "text_muted": "#64748B",
+    "gold_accents": {
+      "gold_main": "#D4AF37",
+      "gold_light": "#F3E5AB",
+      "gold_metallic": "#C5A028",
+      "gold_hover": "#E5C158",
+      "gold_gradient": "bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#C5A028]"
+    },
+    "functional": {
+      "success_emerald": "#10B981",
+      "error_rose": "#F43F5E",
+      "warning_amber": "#F59E0B",
+      "info_cyan": "#06B6D4"
+    }
+  },
+  "surface_strategies": {
+    "glassmorphism": "backdrop-blur-xl bg-[#0B132B]/80 border border-[#D4AF37]/20 shadow-2xl",
+    "card_style": "bg-[#1C2541]/80 hover:bg-[#1C2541] border border-[#D4AF37]/20 hover:border-[#D4AF37]/50 transition-all duration-300 rounded-xl shadow-lg",
+    "chat_panel_style": "bg-[#0F172A]/95 border-l border-[#D4AF37]/25 shadow-2xl h-full flex flex-col",
+    "dynamic_canvas_style": "bg-gradient-to-br from-[#0B132B] via-[#101A36] to-[#0A0F24] p-6 lg:p-10 rounded-2xl border border-[#D4AF37]/30 shadow-2xl overflow-y-auto"
+  },
+  "key_features_and_modes": {
+    "mode_1_static_marketing": {
+      "pages": ["Home", "Services", "About", "Contact"],
+      "home_sections": ["Hero with CTA to launch AI Mode", "Core Services Grid (Cloud Accounting, Tax Planning, Bookkeeping, Business Advisory)", "Why Choose J A Fell & Co (40+ years experience, Southport local + UK wide)", "Interactive Tax Calculator / Fee Estimator Preview", "Client Testimonials & Case Studies", "Footer with Map & Office Address"],
+      "services_page": "Detailed breakdown of Cloud Accounting (Xero/QuickBooks), Tax Planning, Bookkeeping, Corporate Advisory, Payroll & Audit",
+      "about_page": "Firm story, leadership team bios, chartered credentials, Southport heritage",
+      "contact_page": "Address 40 Hoghton Street Southport PR9 0PQ, Phone 01704 500299, interactive contact form & Google Map overlay"
+    },
+    "mode_2_ai_split_screen": {
+      "description": "Interactive AI Assistant on Right + Dynamic Left Canvas that morphs in real-time based on discussion",
+      "right_panel_chat": "AI Chat Assistant with OpenAI Whisper voice input (mic button), TTS audio output with animated waveform indicator, voice state badges (Listening, Thinking, Speaking), Emergent Google Login pill at top right",
+      "left_panel_dynamic_canvas": {
+        "views": [
+          "Service Explainer Card (Triggered when user asks about tax planning or bookkeeping)",
+          "Interactive Intake/Onboarding Form (Captures: Business Name, Contact Person, Turnover, Service Interested In, Current Accountant - auto-fills live as user chats or types manually)",
+          "Team Advisor Profile Card (Shows senior advisors matching user requirements)",
+          "Fee Quote & Service Summary Dashboard (Real-time estimated fee breakdown based on turnover & services)",
+          "Document Checklist & Meeting Scheduler (Pick a slot at 40 Hoghton Street or video call)"
+        ]
+      }
+    },
+    "auth": {
+      "google_login": "Emergent Google Login popup/button integrated into header and AI chat assistant status bar",
+      "user_state": "Saves user profile and ongoing chat/intake form progress in local state/backend"
+    },
+    "voice_chat": {
+      "tech": "OpenAI Whisper speech recognition + Speech Synthesis TTS",
+      "components": "Mic toggle with pulse animation, live audio visualizer waveform bars, Mute/Unmute audio response toggle, transcript streaming text"
+    }
+  },
+  "image_urls": {
+    "hero_office": "https://images.unsplash.com/photo-1560264280-88b68371db39?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwxfHxjaGFydGVyZWQlMjBhY2NvdW50YW50JTIwZmluYW5jaWFsJTIwdGF4JTIwYWR2aXNvciUyMGV4ZWN1dGl2ZSUyMHRlYW0lMjBvZmZpY2V8ZW58MHx8fHwxNzg4MjkyODk0fDA&ixlib=rb-4.1.0&q=85",
+    "financial_analysis": "https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHw0fHxjaGFydGVyZWQlMjBhY2NvdW50YW50JTIwZmluYW5jaWFsJTIwdGF4JTIwYWR2aXNvciUyMGV4ZWN1dGl2ZSUyMHRlYW0lMjBvZmZpY2V8ZW58MHx8fHwxNzg4MjkyODk0fDA&ixlib=rb-4.1.0&q=85",
+    "tax_calculator_desk": "https://images.unsplash.com/photo-1709880945165-d2208c6ad2ec?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwyfHxjaGFydGVyZWQlMjBhY2NvdW50YW50JTIwZmluYW5jaWFsJTIwdGF4JTIwYWR2aXNvciUyMGV4ZWN1dGl2ZSUyMHRlYW0lMjBvZmZpY2V8ZW58MHx8fHwxNzg4MjkyODk0fDA&ixlib=rb-4.1.0&q=85",
+    "southport_office_building": "https://images.unsplash.com/photo-1657073900634-f81f81b8dbdf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHw0fHxzb3V0aHBvcnQlMjB1ayUyMGJ1aWxkaW5nJTIwb2ZmaWNlJTIwbGFuZG1hcmslMjBzdHJlZXR8ZW58MHx8fHwxNzg4MjkyOTAzfDA&ixlib=rb-4.1.0&q=85",
+    "team_member_john_fell": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxleGVjdXRpdmUlMjBwb3J0cmFpdCUyMGFjY291bnRhbnQlMjBhZHZpc29yJTIwc3VpdHxlbnwwfHx8fDE3ODgyOTI5MDN8MA&ixlib=rb-4.1.0&q=85",
+    "team_member_david_smith": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwyfHxleGVjdXRpdmUlMjBwb3J0cmFpdCUyMGFjY291bnRhbnQlMjBhZHZpc29yJTIwc3VpdHxlbnwwfHx8fDE3ODgyOTI5MDN8MA&ixlib=rb-4.1.0&q=85",
+    "team_member_claire_taylor": "https://images.unsplash.com/photo-1614786269829-d24616faf56d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwzfHxleGVjdXRpdmUlMjBwb3J0cmFpdCUyMGFjY291bnRhbnQlMjBhZHZpc29yJTIwc3VpdHxlbnwwfHx8fDE3ODgyOTI5MDN8MA&ixlib=rb-4.1.0&q=85"
+  },
+  "testing_attributes": {
+    "rule": "All interactive and key informational elements MUST include a data-testid attribute in kebab-case",
+    "key_test_ids": [
+      "nav-brand-logo",
+      "nav-link-home",
+      "nav-link-services",
+      "nav-link-about",
+      "nav-link-contact",
+      "btn-launch-ai-mode",
+      "btn-toggle-view-mode",
+      "google-login-button",
+      "chat-input-field",
+      "chat-send-button",
+      "chat-voice-mic-button",
+      "voice-waveform-visualizer",
+      "intake-form-business-name",
+      "intake-form-contact-name",
+      "intake-form-turnover",
+      "intake-form-service-interested",
+      "intake-form-current-accountant",
+      "intake-form-submit-button",
+      "dynamic-canvas-container",
+      "contact-form-submit-button"
+    ]
+  },
+  "motion_and_animations": {
+    "framer_motion_usage": "Smooth tab/canvas transitions, staggered entrance for cards, glowing gold pulsing borders on voice active",
+    "transition_rules": "Use specific properties (transform, opacity, border-color). DO NOT use transition: all.",
+    "subtle_effects": "Gold shimmer beam on primary CTA buttons, floating voice waveform when speaking"
+  },
+  "instructions_to_main_agent": [
+    "Ensure the website strictly uses the deep navy (#0B132B / #1C2541) and rich gold (#D4AF37) visual palette.",
+    "Ensure Cormorant Garamond is imported and used for headlines with Outfit for crisp UI body text.",
+    "Implement the full dual-mode architecture: Top navigation bar lets users switch between 'Website Mode' and 'AI Advisory Mode' smoothly.",
+    "In AI Advisory Mode, render a split view: Left side displays dynamic canvas cards (auto-filling intake form, service insights, tax calculators, team profiles) and Right side displays the AI chat interface.",
+    "Include real-time voice chat features: OpenAI Whisper speech-to-text trigger + Speech Synthesis audio response playback with an audio visualizer.",
+    "Implement the emergent Google login widget and persist user session in frontend local storage / context.",
+    "Ensure all forms and buttons have proper data-testid attributes."
+  ]
+}
