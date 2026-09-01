@@ -14,7 +14,7 @@ function makeSessionId() {
   return "sess_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
-const GREETING = "Hello, I'm Fiona, your AI advisor at J A Fell & Co. Whether you need cloud accounting, tax planning, bookkeeping or business advice, I'm here to help — and this panel will update as we chat. What can I help you with today?";
+const GREETING = "Hello, I'm Fiona, the AI advisor at J A Fell & Co — Chartered Accountants in Southport. We help growing businesses and financial advisers with personal tax, business accounts & tax, payroll, bookkeeping, business formation and FCA/SRA compliance. This panel updates as we chat. How can I help you today?";
 
 export default function AIMode() {
   const auth = useAuth();

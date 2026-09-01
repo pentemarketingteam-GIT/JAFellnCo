@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, Sparkles } from "lucide-react";
+import { MapPin, Phone, CalendarCheck, Sparkles } from "lucide-react";
 import { FIRM, SERVICES } from "@/data/firm";
 
 export default function Footer() {
@@ -13,7 +13,7 @@ export default function Footer() {
             <div className="font-serif text-lg font-semibold text-white">J A Fell &amp; Co</div>
           </div>
           <p className="text-sm text-slate-400 leading-relaxed">
-            Chartered Accountants & Business Advisors serving {FIRM.areas} since {FIRM.established}.
+            {FIRM.tagline} A modern firm of Chartered Accountants serving {FIRM.areas}.
           </p>
         </div>
 
@@ -48,8 +48,8 @@ export default function Footer() {
               <a href={FIRM.phoneHref} className="hover:text-gold transition-colors font-mono">{FIRM.phone}</a>
             </li>
             <li className="flex items-center gap-3 text-sm text-slate-400">
-              <Mail size={16} className="text-gold shrink-0" />
-              <a href={`mailto:${FIRM.email}`} className="hover:text-gold transition-colors">{FIRM.email}</a>
+              <CalendarCheck size={16} className="text-gold shrink-0" />
+              <a href={FIRM.booking} target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">Book a discovery call</a>
             </li>
           </ul>
         </div>

@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Phone, ShieldCheck, Star, Quote } from "lucide-react";
-import { FIRM, SERVICES, IMAGES, STATS, TESTIMONIALS, CASE_STUDIES } from "@/data/firm";
+import { ArrowRight, Sparkles, Phone, ShieldCheck, Check, CalendarCheck } from "lucide-react";
+import { FIRM, SERVICES, IMAGES, STATS, WHO_WE_WORK_WITH, HOW_IT_WORKS } from "@/data/firm";
 import ServiceIcon from "@/components/ServiceIcon";
 import FeeEstimator from "@/components/FeeEstimator";
 
@@ -27,31 +27,35 @@ export default function Home() {
           <div className="lg:col-span-7">
             <motion.div initial="hidden" animate="show" variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/30 bg-gold/5 mb-6">
               <ShieldCheck size={14} className="text-gold" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Chartered · Est. {FIRM.established} · Southport</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Chartered Accountants · Southport · UK-wide</span>
             </motion.div>
 
             <motion.h1 initial="hidden" animate="show" custom={1} variants={fadeUp} className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight">
-              Accountancy that helps your business <span className="gold-text italic">grow with confidence</span>
+              Clear. Proactive. <span className="gold-text italic">Advice.</span>
             </motion.h1>
 
             <motion.p initial="hidden" animate="show" custom={2} variants={fadeUp} className="mt-6 text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed">
-              From cloud accounting and proactive tax planning to hands-on business advisory, we partner with ambitious businesses and financial advisers across {FIRM.areas}.
+              {FIRM.proposition} We're a modern firm of Chartered Accountants working with growing businesses and financial advisers across {FIRM.areas}.
             </motion.p>
 
             <motion.div initial="hidden" animate="show" custom={3} variants={fadeUp} className="mt-9 flex flex-col sm:flex-row gap-4">
-              <button onClick={() => navigate("/ai")} data-testid="hero-launch-ai" className="gold-btn px-7 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 group">
-                <Sparkles size={18} /> Talk to our AI Advisor
+              <a href={FIRM.booking} target="_blank" rel="noopener noreferrer" data-testid="hero-book-call" className="gold-btn px-7 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 group">
+                <CalendarCheck size={18} /> Book a discovery call
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-              <a href={FIRM.phoneHref} data-testid="hero-call" className="px-7 py-3.5 rounded-full font-semibold border border-gold/40 text-white hover:bg-gold/10 transition-colors flex items-center justify-center gap-2">
-                <Phone size={18} className="text-gold" /> {FIRM.phone}
               </a>
+              <button onClick={() => navigate("/ai")} data-testid="hero-launch-ai" className="px-7 py-3.5 rounded-full font-semibold border border-gold/40 text-white hover:bg-gold/10 transition-colors flex items-center justify-center gap-2">
+                <Sparkles size={18} className="text-gold" /> Talk to our AI Advisor
+              </button>
             </motion.div>
 
-            <motion.div initial="hidden" animate="show" custom={4} variants={fadeUp} className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
+            <motion.a href={FIRM.phoneHref} initial="hidden" animate="show" custom={3} variants={fadeUp} data-testid="hero-call" className="mt-5 inline-flex items-center gap-2 text-slate-300 hover:text-gold transition-colors">
+              <Phone size={16} className="text-gold" /> <span className="font-mono">{FIRM.phone}</span>
+            </motion.a>
+
+            <motion.div initial="hidden" animate="show" custom={4} variants={fadeUp} className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
               {STATS.map((s) => (
                 <div key={s.label}>
-                  <div className="font-mono text-2xl sm:text-3xl font-semibold gold-text">{s.value}</div>
+                  <div className="font-serif text-xl sm:text-2xl font-semibold gold-text">{s.value}</div>
                   <div className="text-xs text-slate-400 mt-1 leading-snug">{s.label}</div>
                 </div>
               ))}
@@ -107,16 +111,19 @@ export default function Home() {
           </motion.div>
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} custom={1} variants={fadeUp}>
             <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Why J A Fell &amp; Co</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">Local roots. National reach. Personal service.</h2>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">A modern firm that speaks your language</h2>
             <p className="text-slate-400 mt-4 leading-relaxed">
-              For over four decades we've been the trusted finance partner for Southport's businesses — and today we support clients right across the UK. You get a named advisor who knows your numbers and your ambitions.
+              We're a modern firm of Chartered Accountants, blending traditional values with forward-thinking strategies. Based in the North West and working with clients across the UK, we focus on simplifying your finances, saving time and delivering insight.
+            </p>
+            <p className="text-slate-400 mt-4 leading-relaxed">
+              We understand your world and work as your partner in progress. Let's build something better, together.
             </p>
             <ul className="mt-8 space-y-4">
               {[
-                "ICAEW-regulated Chartered Accountants",
-                "Fixed, transparent fees — no surprises",
-                "Cloud-first, so you see your numbers in real time",
-                "Proactive advice, not just year-end compliance",
+                "Chartered Accountants, traditional values with modern thinking",
+                "Cloud accounting & streamlined systems",
+                "Efficiency, clarity and growth-focused advice",
+                "Specialists supporting financial advisers",
               ].map((f) => (
                 <li key={f} className="flex items-start gap-3 text-slate-200">
                   <ShieldCheck size={18} className="text-gold mt-0.5 shrink-0" /> {f}
@@ -130,69 +137,56 @@ export default function Home() {
       {/* Fee Estimator */}
       <FeeEstimator />
 
-      {/* Case Studies */}
+      {/* Who we work with */}
       <section className="relative py-24 bg-navy-800/50 grain">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="max-w-2xl mb-14">
-            <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Case studies</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">Real results for North West businesses</h2>
-            <p className="text-slate-400 mt-4">A few of the businesses we've helped save tax, raise funding and reclaim their time.</p>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Accountants for financial advisers</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">Too much admin, not enough headspace?</h2>
+            <p className="text-slate-400 mt-4">Whatever stage your advisory practice is at, we give you clarity, control and a clear path to your goals.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {CASE_STUDIES.map((c, i) => (
+            {WHO_WE_WORK_WITH.map((w, i) => (
               <motion.div
-                key={c.client}
+                key={w.title}
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-60px" }}
                 custom={i}
                 variants={fadeUp}
-                data-testid={`case-study-${i}`}
+                data-testid={`work-with-${i}`}
                 className="relative p-7 rounded-2xl bg-navy-700/70 border border-gold/15 hover:border-gold/45 transition-colors flex flex-col"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-serif text-xl font-semibold text-white">{c.client}</h3>
-                    <p className="text-xs text-gold/70 mt-1">{c.sector}</p>
-                  </div>
-                </div>
-                <p className="text-sm text-slate-400 mt-4 leading-relaxed"><span className="text-slate-300 font-medium">Challenge:</span> {c.challenge}</p>
-                <p className="text-sm text-slate-400 mt-2 leading-relaxed"><span className="text-slate-300 font-medium">What we did:</span> {c.solution}</p>
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  <div className="p-3 rounded-xl bg-navy-800/60 border border-gold/10">
-                    <div className="text-[10px] uppercase tracking-wider text-slate-500">{c.before.label}</div>
-                    <div className="font-mono text-lg text-slate-300 line-through decoration-rose-400/50">{c.before.value}</div>
-                  </div>
-                  <div className="p-3 rounded-xl bg-gold/10 border border-gold/25">
-                    <div className="text-[10px] uppercase tracking-wider text-gold/70">{c.after.label}</div>
-                    <div className="font-mono text-lg gold-text font-semibold">{c.after.value}</div>
-                  </div>
-                </div>
-                <div className="mt-4 inline-flex items-center gap-2 text-emerald-400 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" /> {c.metric}
-                </div>
+                <h3 className="font-serif text-xl font-semibold text-white">{w.title}</h3>
+                <p className="text-sm text-slate-400 mt-3 leading-relaxed">{w.summary}</p>
+                <ul className="mt-5 space-y-2.5 flex-1">
+                  {w.points.map((p) => (
+                    <li key={p} className="flex items-start gap-2.5 text-sm text-slate-200">
+                      <span className="w-5 h-5 rounded-full bg-gold/15 flex items-center justify-center mt-0.5 shrink-0"><Check size={12} className="text-gold" /></span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-gold/70 italic mt-5 pt-4 border-t border-gold/10">{w.note}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* How it works */}
       <section className="relative py-24">
         <div className="max-w-7xl mx-auto px-5 sm:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Client stories</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">Trusted by businesses that don't stand still</h2>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">How it works</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">Trusted. Responsive. Insightful.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.div key={i} initial="hidden" whileInView="show" viewport={{ once: true }} custom={i} variants={fadeUp} className="p-7 rounded-2xl bg-navy-700/60 border border-gold/15">
-                <Quote size={28} className="text-gold/40 mb-4" />
-                <p className="text-slate-200 leading-relaxed">"{t.quote}"</p>
-                <div className="flex items-center gap-1 mt-5 text-gold">
-                  {[...Array(5)].map((_, k) => <Star key={k} size={14} fill="currentColor" />)}
-                </div>
-                <div className="mt-3 text-sm"><span className="text-white font-medium">{t.author}</span><span className="text-slate-500"> · {t.company}</span></div>
+            {HOW_IT_WORKS.map((h, i) => (
+              <motion.div key={h.step} initial="hidden" whileInView="show" viewport={{ once: true }} custom={i} variants={fadeUp} className="p-7 rounded-2xl bg-navy-700/60 border border-gold/15">
+                <div className="w-11 h-11 rounded-full border border-gold/30 bg-gold/10 flex items-center justify-center font-serif text-xl gold-text font-semibold mb-5">{h.step}</div>
+                <h3 className="font-serif text-xl font-semibold text-white">{h.title}</h3>
+                <p className="text-sm text-slate-400 mt-3 leading-relaxed">{h.text}</p>
               </motion.div>
             ))}
           </div>
@@ -204,13 +198,15 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="relative rounded-3xl overflow-hidden border border-gold/30 glass p-10 sm:p-14 text-center">
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
-            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white relative">Ready to talk numbers?</h2>
-            <p className="text-slate-300 mt-4 max-w-xl mx-auto relative">Chat with our AI advisor for instant answers and an indicative quote, or book a free consultation at our Southport office.</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white relative">Ready to take control of your business?</h2>
+            <p className="text-slate-300 mt-4 max-w-xl mx-auto relative">Book a free discovery call to see how we can help, or chat with our AI advisor for instant answers and an indicative quote.</p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center relative">
-              <button onClick={() => navigate("/ai")} className="gold-btn px-7 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2">
-                <Sparkles size={18} /> Launch AI Advisor
+              <a href={FIRM.booking} target="_blank" rel="noopener noreferrer" className="gold-btn px-7 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2">
+                <CalendarCheck size={18} /> Book a discovery call
+              </a>
+              <button onClick={() => navigate("/ai")} className="px-7 py-3.5 rounded-full font-semibold border border-gold/40 text-white hover:bg-gold/10 transition-colors flex items-center justify-center gap-2">
+                <Sparkles size={18} className="text-gold" /> Launch AI Advisor
               </button>
-              <Link to="/contact" className="px-7 py-3.5 rounded-full font-semibold border border-gold/40 text-white hover:bg-gold/10 transition-colors">Book a consultation</Link>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Clock, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { MapPin, Phone, Clock, Send, Loader2, CheckCircle2, CalendarCheck } from "lucide-react";
 import { toast } from "sonner";
 import { FIRM } from "@/data/firm";
 import { http } from "@/lib/apiClient";
@@ -47,8 +47,8 @@ export default function Contact() {
             {[
               { icon: MapPin, label: "Visit us", value: FIRM.address },
               { icon: Phone, label: "Call us", value: FIRM.phone, href: FIRM.phoneHref, mono: true },
-              { icon: Mail, label: "Email us", value: FIRM.email, href: `mailto:${FIRM.email}` },
-              { icon: Clock, label: "Opening hours", value: "Mon–Fri · 9:00am – 5:30pm" },
+              { icon: Phone, label: "Financial advisers", value: FIRM.advisorPhone, href: FIRM.advisorPhoneHref, mono: true },
+              { icon: Clock, label: "Opening hours", value: FIRM.hours },
             ].map((c) => (
               <div key={c.label} className="flex items-start gap-4 p-5 rounded-2xl bg-navy-700/60 border border-gold/15">
                 <div className="w-11 h-11 rounded-xl bg-gold/10 border border-gold/25 flex items-center justify-center shrink-0">
@@ -64,6 +64,9 @@ export default function Contact() {
                 </div>
               </div>
             ))}
+            <a href={FIRM.booking} target="_blank" rel="noopener noreferrer" data-testid="contact-book-call" className="gold-btn px-5 py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 w-full">
+              <CalendarCheck size={18} /> Book a free discovery call
+            </a>
             <div className="rounded-2xl overflow-hidden border border-gold/20 h-56">
               <iframe
                 title="J A Fell & Co location"

@@ -18,13 +18,13 @@ export default function About() {
           <div>
             <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Our story</span>
             <h1 className="font-serif text-4xl sm:text-5xl font-bold text-white mt-4 leading-tight">
-              Four decades of trusted advice on <span className="gold-text italic">Hoghton Street</span>
+              A modern firm, rooted on <span className="gold-text italic">Hoghton Street</span>
             </h1>
             <p className="text-slate-300 mt-6 leading-relaxed">
-              Founded in {FIRM.established}, J A Fell &amp; Co has grown from a small Southport practice into a modern, cloud-first firm of Chartered Accountants — while never losing the personal touch that made us who we are.
+              J A Fell &amp; Co is a modern firm of Chartered Accountants, blending traditional values with forward-thinking strategies. Based in Southport in the North West and working with clients across the UK, we focus on simplifying your finances, saving you time and delivering real insight.
             </p>
             <p className="text-slate-400 mt-4 leading-relaxed">
-              Today we advise over 600 businesses and work hand-in-hand with financial advisers across the UK, blending decades of experience with the best modern accounting technology.
+              Our clients juggle multiple roles, so we prioritise efficiency, clarity and growth-focused advice — and we work hand-in-hand with financial advisers who need an accountant that understands their world.
             </p>
           </div>
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }} className="relative rounded-3xl overflow-hidden border border-gold/20">
@@ -42,7 +42,7 @@ export default function About() {
         <div className="max-w-6xl mx-auto px-5 sm:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
           {STATS.map((s) => (
             <div key={s.label} className="text-center">
-              <div className="font-mono text-3xl font-semibold gold-text">{s.value}</div>
+              <div className="font-serif text-2xl sm:text-3xl font-semibold gold-text">{s.value}</div>
               <div className="text-sm text-slate-400 mt-2">{s.label}</div>
             </div>
           ))}

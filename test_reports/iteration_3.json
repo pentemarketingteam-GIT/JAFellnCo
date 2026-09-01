@@ -1,0 +1,26 @@
+{
+  "summary": "Regression testing after business-details content correction. Backend: 14/14 pytest tests passed (health, auth me/logout, chat service+scheduler+intake, TTS, intake/contact/meeting persistence, advisor/state auth-gated round-trip). Additional live /api/chat checks confirmed real content: 'Tell me about personal tax' -> canvas.view='service' with 'Personal Tax' title and real features; 'Who would I work with?' -> canvas.view='team' with advisor='Oliver Grills', role='Principal, Chartered Accountant'. Frontend: Home hero shows 'Clear. Proactive. Advice.' + proposition 'Accounting support that scales…'; hero-book-call links to https://calendly.com/olivergrills/discovery-call in a new tab; phone 01704 500299 visible; STATS render as word badges Cloud-first / Proactive / UK-wide / Advisers; work-with-0/1/2 render; all 6 home-service-* testids present (personal-tax, business-tax, payroll, business-formation, bookkeeping, fca-sra-compliance); NO case-study-* or testimonial-* elements; NO 'Est. 1979' or '£40m'. FeeEstimator updates correctly (£95 initial -> £145 after selecting £500k–£1m band + Payroll). Services page renders all 6 service-detail-* sections. About page shows Oliver Grills as Principal only (no John/David/Claire, no 'Est. 1979', no 'Founded in undefined'). Contact page shows address 40 Hoghton Street, phone 01704 500299, advisor phone 07976 133339, hours Mon–Fri 09:00–17:00, contact-book-call linking to Calendly, and no email info card; contact form submitted to /api/contact successfully ('Message sent'). AI mode greeting on /ai references real services (personal tax, business accounts & tax, payroll, bookkeeping, business formation and FCA/SRA compliance). Only console noise observed: two 401s on /api/auth/me for logged-out users — expected and documented as non-bug.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SYSTEM_PROMPT view enum still reads 'welcome | service | intake | team | quote | scheduler' — good; behaviour verified.",
+    "AIMode saveState closure caveat from iteration 2 still applies (low priority).",
+    "Contact page still uses browser default map iframe (fine), and no email is exposed anywhere in FIRM (data confirmed).",
+    "Old TESTIMONIALS/CASE_STUDIES exports were fully removed from /app/frontend/src/data/firm.js — no dead imports remain (verified via lack of runtime errors)."
+  ],
+  "updated_files": [
+    "/app/test_reports/iteration_3.json",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "No user credentials required. Bearer session tokens seeded in Mongo test_database.user_sessions via pytest fixture (see /app/auth_testing.md); cleaned up after run.",
+  "seed_data_creation": "session_token pytest fixture inserts TEST_ user + user_session. TEST_ prefixed intake/contact/meeting/advisor_states rows deleted after each test. One TEST_UI contact record was created via UI submit and left in db.contacts (safe to delete).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All content corrections are applied cleanly across Home/Services/About/Contact/Footer + AI mode + SYSTEM_PROMPT. Real Calendly URL is https://calendly.com/olivergrills/discovery-call, principal is Oliver Grills. 401 responses on /api/auth/me for logged-out visitors are expected. Fee estimator service testids are `fee-service-<id>` where id ∈ personal-tax,business-tax,payroll,bookkeeping,formation,compliance (note the two shorter ids 'formation' and 'compliance' vs the fuller service ids used elsewhere)."
+}

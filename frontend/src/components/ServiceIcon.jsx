@@ -1,9 +1,9 @@
 import React from "react";
-import { CloudCog, Landmark, BookOpenCheck, TrendingUp, Users, FileCheck2 } from "lucide-react";
+import { CloudCog, Landmark, BookOpenCheck, TrendingUp, Users, FileCheck2, Building2, ShieldCheck } from "lucide-react";
 
-const MAP = { CloudCog, Landmark, BookOpenCheck, TrendingUp, Users, FileCheck2 };
+const MAP = { CloudCog, Landmark, BookOpenCheck, TrendingUp, Users, FileCheck2, Building2, ShieldCheck };
 
 export default function ServiceIcon({ name, ...props }) {
-  const Cmp = MAP[name] || CloudCog;
+  const Cmp = MAP[name] || Landmark;
   return <Cmp {...props} />;
 }

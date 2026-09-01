@@ -17,9 +17,9 @@ export default function Services() {
         <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-8 text-center">
           <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Our services</span>
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white mt-4 leading-tight">
-            Everything you need, from <span className="gold-text italic">first invoice to exit</span>
+            Tax and accounting <span className="gold-text italic">services</span>
           </h1>
-          <p className="text-slate-300 mt-6 text-lg">Modern, cloud-first accountancy delivered by a Chartered team that genuinely cares about your growth.</p>
+          <p className="text-slate-300 mt-6 text-lg">Modern, cloud-first accountancy delivered by a Chartered team — with specialist support for financial advisers.</p>
         </div>
       </section>
 
