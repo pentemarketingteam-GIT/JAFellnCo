@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Building2, Check, Loader2, Send, Sparkles, CloudCog, BadgePoundSterling, UserRound } from "lucide-react";
+import { Building2, Check, Loader2, Send, Sparkles, CloudCog, BadgePoundSterling, UserRound, CalendarClock, Video, MapPin } from "lucide-react";
 import { SERVICES, TEAM, IMAGES, FIRM } from "@/data/firm";
 import { http } from "@/lib/apiClient";
 
@@ -202,6 +202,107 @@ function IntakeView({ intake, setIntake }) {
   );
 }
 
+function SchedulerView({ data, intake }) {
+  const [mode, setMode] = React.useState("office");
+  const [date, setDate] = React.useState("");
+  const [time, setTime] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+  const [booked, setBooked] = React.useState(false);
+
+  const days = React.useMemo(() => {
+    const out = [];
+    const d = new Date();
+    let added = 0;
+    while (added < 6) {
+      d.setDate(d.getDate() + 1);
+      const dow = d.getDay();
+      if (dow !== 0 && dow !== 6) {
+        out.push({
+          key: d.toISOString().slice(0, 10),
+          label: d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }),
+        });
+        added++;
+      }
+    }
+    return out;
+  }, []);
+
+  const times = ["09:30", "11:00", "13:30", "15:00", "16:30"];
+
+  const book = async () => {
+    if (!date || !time) { toast.error("Please pick a date and time."); return; }
+    setSaving(true);
+    try {
+      await http.post("/meeting", {
+        name: intake?.contact_name || "",
+        email: intake?.email || "",
+        phone: intake?.phone || "",
+        mode, date, time,
+        notes: intake?.business_name ? `Business: ${intake.business_name}` : "",
+      });
+      setBooked(true);
+      toast.success("Meeting requested — we'll confirm by email shortly.");
+    } catch (e) {
+      toast.error("Couldn't book right now. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <motion.div key="scheduler" {...wrap} className="h-full">
+      <div className="flex items-center gap-3 mb-2">
+        <CalendarClock className="text-gold" size={22} />
+        <span className="text-xs uppercase tracking-[0.2em] text-gold/90">Book a consultation</span>
+      </div>
+      <h2 className="font-serif text-3xl font-semibold text-white">Pick a time that suits you</h2>
+      <p className="text-slate-400 text-sm mt-2">{data?.note || "Free 30-minute consultation with a senior advisor. No obligation."}</p>
+
+      <div className="mt-6 grid grid-cols-2 gap-3" data-testid="scheduler-modes">
+        {[{ id: "office", icon: MapPin, t: "In person", s: FIRM.addressShort }, { id: "video", icon: Video, t: "Video call", s: "Google Meet / Teams" }].map((m) => (
+          <button
+            key={m.id}
+            onClick={() => setMode(m.id)}
+            data-testid={`scheduler-mode-${m.id}`}
+            className={`p-4 rounded-xl border text-left transition-colors ${mode === m.id ? "border-gold/50 bg-gold/10" : "border-gold/15 bg-navy-700/40 hover:border-gold/35"}`}
+          >
+            <m.icon size={18} className="text-gold mb-2" />
+            <div className="text-sm text-white font-medium">{m.t}</div>
+            <div className="text-xs text-slate-400 mt-0.5">{m.s}</div>
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-6">
+        <div className="text-xs uppercase tracking-wider text-gold/70 mb-2">Date</div>
+        <div className="flex flex-wrap gap-2" data-testid="scheduler-dates">
+          {days.map((d) => (
+            <button key={d.key} onClick={() => setDate(d.key)} className={`px-3 py-2 rounded-lg text-xs font-medium border transition-colors ${date === d.key ? "gold-btn border-transparent" : "border-gold/20 text-slate-300 hover:border-gold/45"}`}>
+              {d.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <div className="text-xs uppercase tracking-wider text-gold/70 mb-2">Time</div>
+        <div className="flex flex-wrap gap-2" data-testid="scheduler-times">
+          {times.map((t) => (
+            <button key={t} onClick={() => setTime(t)} className={`px-4 py-2 rounded-lg text-sm font-mono border transition-colors ${time === t ? "gold-btn border-transparent" : "border-gold/20 text-slate-300 hover:border-gold/45"}`}>
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <button onClick={book} disabled={saving} data-testid="scheduler-book-button" className="mt-7 gold-btn px-6 py-3 rounded-full font-semibold flex items-center gap-2 disabled:opacity-60">
+        {saving ? <Loader2 size={16} className="animate-spin" /> : booked ? <Check size={16} /> : <CalendarClock size={16} />}
+        {saving ? "Booking…" : booked ? "Meeting requested" : "Request this slot"}
+      </button>
+    </motion.div>
+  );
+}
+
 export default function DynamicCanvas({ canvas, intake, setIntake }) {
   const view = canvas?.view || "welcome";
   const data = canvas?.data || {};
@@ -217,6 +318,7 @@ export default function DynamicCanvas({ canvas, intake, setIntake }) {
           {view === "service" && <ServiceView data={data} />}
           {view === "team" && <TeamView data={data} />}
           {view === "quote" && <QuoteView data={data} />}
+          {view === "scheduler" && <SchedulerView data={data} intake={intake} />}
           {view === "intake" && <IntakeView intake={intake} setIntake={setIntake} />}
         </AnimatePresence>
       </div>

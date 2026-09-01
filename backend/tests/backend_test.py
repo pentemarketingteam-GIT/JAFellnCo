@@ -148,6 +148,82 @@ def test_intake_persistence(db):
     db.intakes.delete_one({"id": d["id"]})
 
 
+# ---------- Meeting (new) ----------
+def test_meeting_persistence(db):
+    payload = {
+        "name": "TEST_Meeting",
+        "email": "TEST_meeting@example.com",
+        "phone": "01704500299",
+        "mode": "office",
+        "date": "2026-02-05",
+        "time": "11:00",
+        "notes": "TEST notes",
+    }
+    r = requests.post(f"{API}/meeting", json=payload)
+    assert r.status_code == 200, r.text
+    d = r.json()
+    assert d["ok"] is True and "id" in d
+    found = db.meetings.find_one({"id": d["id"]})
+    assert found is not None
+    assert found["mode"] == "office"
+    assert found["date"] == "2026-02-05"
+    db.meetings.delete_one({"id": d["id"]})
+
+
+# ---------- Chat scheduler view (new) ----------
+def test_chat_scheduler_view():
+    payload = {
+        "session_id": f"test-{uuid.uuid4().hex[:8]}",
+        "message": "I would like to book a consultation please",
+        "history": [],
+        "intake": {},
+    }
+    r = requests.post(f"{API}/chat", json=payload, timeout=60)
+    assert r.status_code == 200, r.text
+    d = r.json()
+    assert d["canvas"]["view"] == "scheduler", f"Expected scheduler, got {d['canvas']['view']}"
+
+
+# ---------- Advisor state (new, auth-gated) ----------
+def test_advisor_state_requires_auth():
+    r = requests.get(f"{API}/advisor/state")
+    assert r.status_code == 401
+    r2 = requests.post(f"{API}/advisor/state", json={"messages": [], "intake": {}, "canvas": {}})
+    assert r2.status_code == 401
+
+
+def test_advisor_state_get_defaults(session_token):
+    token, user_id, _ = session_token
+    # Ensure no state exists
+    r = requests.get(f"{API}/advisor/state", headers={"Authorization": f"Bearer {token}"})
+    assert r.status_code == 200
+    d = r.json()
+    assert "messages" in d and "intake" in d and "canvas" in d
+
+
+def test_advisor_state_roundtrip(session_token, db):
+    token, user_id, _ = session_token
+    payload = {
+        "messages": [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}],
+        "intake": {"business_name": "TEST_Acme"},
+        "canvas": {"view": "intake", "data": {}},
+    }
+    r = requests.post(f"{API}/advisor/state", json=payload,
+                      headers={"Authorization": f"Bearer {token}"})
+    assert r.status_code == 200
+    assert r.json().get("ok") is True
+
+    r2 = requests.get(f"{API}/advisor/state", headers={"Authorization": f"Bearer {token}"})
+    assert r2.status_code == 200
+    d = r2.json()
+    assert d["intake"].get("business_name") == "TEST_Acme"
+    assert d["canvas"].get("view") == "intake"
+    assert len(d["messages"]) == 2
+    assert d["messages"][0]["content"] == "hi"
+    # cleanup
+    db.advisor_states.delete_many({"user_id": user_id})
+
+
 def test_contact_persistence(db):
     payload = {
         "name": "TEST_Contact",

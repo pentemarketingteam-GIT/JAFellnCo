@@ -1,0 +1,27 @@
+{
+  "summary": "Iteration 2 testing of four new features: Meeting Scheduler, Fee Estimator, Saved Progress (advisor/state), Case Studies. All 14 backend pytest tests pass (health, auth, chat service+scheduler view, chat intake capture, TTS, intake/contact/meeting persistence, advisor/state auth-gated round-trip). Frontend: Fee Estimator shows non-zero default (£235), updates on band and service toggle (£500 -> £590), fee-cta-ai navigates to /ai. Case studies 0/1/2 all render with before/after and metric. AI mode: 'I'd like to book a meeting please' correctly renders SchedulerView; office/video mode toggles, date and time buttons work, scheduler-book-button posts /api/meeting and shows 'Meeting requested — we'll confirm by email shortly.' toast; button label switches to 'Meeting requested'. Regression: 'Tell me about tax planning' still renders service view with Tax Planning content. No blocking issues.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "AIMode.jsx saveState uses stale `messages` closure (from useCallback deps) plus the new user+assistant msgs concatenated manually — works today but if additional message mutation paths are added, prefer a functional setState + effect-based save to avoid drift.",
+    "advisor/state stores only the last 40 messages (server-side truncation) — client isn't warned when history is trimmed on reload; low priority.",
+    "SchedulerView has no data-testid on the outer container (only on child controls); adding data-testid='scheduler-view' would simplify future integration tests.",
+    "SYSTEM_PROMPT lists 'welcome|service|intake|team|quote' in the JSON shape but 'scheduler' is only described later — a model might occasionally omit scheduler; consider adding it to the enum line for extra reliability (currently works fine in testing)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/iteration_2.json",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "No user credentials required. Bearer session tokens seeded directly in Mongo test_database.user_sessions per /app/auth_testing.md; fixture cleans up.",
+  "seed_data_creation": "session_token pytest fixture inserts a TEST_ user + user_session, cleaned up after session. TEST_ prefixed intake/contact/meeting/advisor_states records deleted after each test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 4 iteration-2 features working end-to-end (backend + UI). Meeting persistence verified in db.meetings. Advisor state round-trip verified via Bearer token. Frontend saved-progress restore path (only triggers when auth.user is set via Google OAuth) was validated at the API level, not via the OAuth UI. If the next iteration needs full logged-in UI testing, seed a session_token cookie in the browser context before navigating to /ai."
+}

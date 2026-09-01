@@ -2,8 +2,9 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Phone, ShieldCheck, Star, Quote } from "lucide-react";
-import { FIRM, SERVICES, IMAGES, STATS, TESTIMONIALS } from "@/data/firm";
+import { FIRM, SERVICES, IMAGES, STATS, TESTIMONIALS, CASE_STUDIES } from "@/data/firm";
 import ServiceIcon from "@/components/ServiceIcon";
+import FeeEstimator from "@/components/FeeEstimator";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -123,6 +124,56 @@ export default function Home() {
               ))}
             </ul>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Fee Estimator */}
+      <FeeEstimator />
+
+      {/* Case Studies */}
+      <section className="relative py-24 bg-navy-800/50 grain">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8">
+          <div className="max-w-2xl mb-14">
+            <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Case studies</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">Real results for North West businesses</h2>
+            <p className="text-slate-400 mt-4">A few of the businesses we've helped save tax, raise funding and reclaim their time.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {CASE_STUDIES.map((c, i) => (
+              <motion.div
+                key={c.client}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-60px" }}
+                custom={i}
+                variants={fadeUp}
+                data-testid={`case-study-${i}`}
+                className="relative p-7 rounded-2xl bg-navy-700/70 border border-gold/15 hover:border-gold/45 transition-colors flex flex-col"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-serif text-xl font-semibold text-white">{c.client}</h3>
+                    <p className="text-xs text-gold/70 mt-1">{c.sector}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-400 mt-4 leading-relaxed"><span className="text-slate-300 font-medium">Challenge:</span> {c.challenge}</p>
+                <p className="text-sm text-slate-400 mt-2 leading-relaxed"><span className="text-slate-300 font-medium">What we did:</span> {c.solution}</p>
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="p-3 rounded-xl bg-navy-800/60 border border-gold/10">
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500">{c.before.label}</div>
+                    <div className="font-mono text-lg text-slate-300 line-through decoration-rose-400/50">{c.before.value}</div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-gold/10 border border-gold/25">
+                    <div className="text-[10px] uppercase tracking-wider text-gold/70">{c.after.label}</div>
+                    <div className="font-mono text-lg gold-text font-semibold">{c.after.value}</div>
+                  </div>
+                </div>
+                <div className="mt-4 inline-flex items-center gap-2 text-emerald-400 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" /> {c.metric}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

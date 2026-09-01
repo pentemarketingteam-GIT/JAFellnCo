@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, LayoutGrid } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 import { http } from "@/lib/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import { useVoice } from "@/hooks/useVoice";
@@ -28,12 +29,34 @@ export default function AIMode() {
   const audioRef = useRef(audioEnabled);
   audioRef.current = audioEnabled;
   const intakeShownRef = useRef(false);
+  const loadedRef = useRef(false);
+
+  const saveState = useCallback((msgs, intk, cnv) => {
+    if (!auth.user) return;
+    http.post("/advisor/state", { messages: msgs, intake: intk, canvas: cnv }).catch(() => {});
+  }, [auth.user]);
+
+  // Restore a signed-in client's saved chat + intake progress once.
+  useEffect(() => {
+    if (!auth.user || loadedRef.current) return;
+    loadedRef.current = true;
+    http.get("/advisor/state").then((res) => {
+      const s = res.data || {};
+      if (Array.isArray(s.messages) && s.messages.length > 1) {
+        setMessages(s.messages);
+        if (s.intake && Object.keys(s.intake).length) setIntake((p) => ({ ...p, ...s.intake }));
+        if (s.canvas && s.canvas.view) { setCanvas(s.canvas); if (s.canvas.view === "intake") intakeShownRef.current = true; }
+        toast.success("Welcome back — we picked up where you left off.");
+      }
+    }).catch(() => {});
+  }, [auth.user]);
 
   const onSend = useCallback(async (userText) => {
-    setMessages((prev) => [...prev, { role: "user", content: userText }]);
+    const userMsg = { role: "user", content: userText };
+    setMessages((prev) => [...prev, userMsg]);
     setSending(true);
     try {
-      const history = [...messages, { role: "user", content: userText }].map((m) => ({ role: m.role, content: m.content }));
+      const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
       const res = await http.post("/chat", {
         session_id: sessionId.current,
         message: userText,
@@ -42,7 +65,8 @@ export default function AIMode() {
       });
       const data = res.data;
       const reply = data.reply || "I'm sorry, could you rephrase that?";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      const assistantMsg = { role: "assistant", content: reply };
+      setMessages((prev) => [...prev, assistantMsg]);
 
       let merged = { ...intake };
       if (data.intake) {
@@ -62,16 +86,16 @@ export default function AIMode() {
       if (nextCanvas.view === "intake") intakeShownRef.current = true;
       setCanvas(nextCanvas);
 
-      if (nextCanvas.view === "intake" || hasClientInfo) {
-        setMobileView("canvas");
-      }
+      if (nextCanvas.view !== "service") setMobileView("canvas");
       if (audioRef.current) voice.speak(reply);
+
+      saveState([...messages, userMsg, assistantMsg], merged, nextCanvas);
     } catch (e) {
       setMessages((prev) => [...prev, { role: "assistant", content: "Apologies, I'm having trouble connecting right now. Please call us on " + FIRM.phone + "." }]);
     } finally {
       setSending(false);
     }
-  }, [messages, intake, voice]);
+  }, [messages, intake, voice, saveState]);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-navy-900 overflow-hidden">

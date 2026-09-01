@@ -68,6 +68,22 @@ class TTSRequest(BaseModel):
     voice: Optional[str] = "onyx"
 
 
+class MeetingSubmit(BaseModel):
+    name: Optional[str] = ""
+    email: Optional[str] = ""
+    phone: Optional[str] = ""
+    mode: Optional[str] = "office"
+    date: Optional[str] = ""
+    time: Optional[str] = ""
+    notes: Optional[str] = ""
+
+
+class AdvisorState(BaseModel):
+    messages: List[dict] = []
+    intake: dict = {}
+    canvas: dict = {}
+
+
 # ---------------- Auth helpers ----------------
 async def get_current_user(session_token: Optional[str] = Cookie(None),
                            authorization: Optional[str] = Header(None)):
@@ -181,7 +197,7 @@ You MUST respond with ONLY a single valid JSON object (no markdown, no code fenc
 {
   "reply": "your conversational message to the user",
   "canvas": {
-    "view": "welcome | service | intake | team | quote",
+    "view": "welcome | service | intake | team | quote | scheduler",
     "data": { ... }
   },
   "intake": {
@@ -200,7 +216,8 @@ Rules for "canvas.view":
 - "service": when the user asks about a specific service. data: {"title": "Service name", "summary": "one line", "features": ["...", "...", "..."], "ideal_for": "who it suits"}
 - "intake": when you are collecting or have collected onboarding details, OR the user wants to become a client / get a quote / book a call. data can be {} (the form reads from the intake object). IMPORTANT: as soon as you have captured a business name OR a contact name, you MUST use "intake" (so the user sees their details auto-filling) before ever using "quote". Only move to "quote" after the intake details have been shown.
 - "team": when the user asks about the team / who they'll work with. data: {"advisor": "name", "role": "...", "bio": "...", "specialties": ["...", "..."]}. Use real-sounding senior advisors: John A. Fell (Managing Partner, tax & advisory), David Smith (Cloud Accounting Lead), Claire Taylor (Bookkeeping & Payroll Manager).
-- "quote": when you have enough info (turnover + service) to sketch an indicative fee. data: {"items": [{"label":"...","price":"from £XX/mo"}], "total": "from £XXX/mo", "note": "Indicative only, subject to a free consultation."}
+- "quote": when you have enough info (turnover + service) to sketch an indicative fee, AND the intake view has already been shown. data: {"items": [{"label":"...","price":"from £XX/mo"}], "total": "from £XXX/mo", "note": "Indicative only, subject to a free consultation."}
+- "scheduler": when the user wants to book a meeting, consultation or call. data: {"note": "a short line encouraging them to pick a slot"}. The visual panel lets them choose an in-person meeting at 40 Hoghton Street or a video call and pick a date and time.
 
 Always be helpful and move the conversation toward booking a free consultation at the Southport office or a video call. Never invent tax figures as guarantees; keep quotes clearly indicative.
 """
@@ -338,6 +355,48 @@ async def submit_contact(payload: ContactSubmit):
     doc["created_at"] = datetime.now(timezone.utc).isoformat()
     await db.contacts.insert_one({**doc})
     return {"ok": True, "id": doc["id"]}
+
+
+@api_router.post("/meeting")
+async def submit_meeting(payload: MeetingSubmit):
+    doc = payload.model_dump()
+    doc["id"] = str(uuid.uuid4())
+    doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.meetings.insert_one({**doc})
+    return {"ok": True, "id": doc["id"]}
+
+
+@api_router.get("/advisor/state")
+async def get_advisor_state(session_token: Optional[str] = Cookie(None),
+                            authorization: Optional[str] = Header(None)):
+    user = await get_current_user(session_token, authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    state = await db.advisor_states.find_one({"user_id": user["user_id"]}, {"_id": 0})
+    if not state:
+        return {"messages": [], "intake": {}, "canvas": {}}
+    return {"messages": state.get("messages", []), "intake": state.get("intake", {}),
+            "canvas": state.get("canvas", {})}
+
+
+@api_router.post("/advisor/state")
+async def save_advisor_state(payload: AdvisorState, session_token: Optional[str] = Cookie(None),
+                             authorization: Optional[str] = Header(None)):
+    user = await get_current_user(session_token, authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    await db.advisor_states.update_one(
+        {"user_id": user["user_id"]},
+        {"$set": {
+            "user_id": user["user_id"],
+            "messages": payload.messages[-40:],
+            "intake": payload.intake,
+            "canvas": payload.canvas,
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }},
+        upsert=True,
+    )
+    return {"ok": True}
 
 
 app.include_router(api_router)

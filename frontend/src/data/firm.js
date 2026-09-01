@@ -110,3 +110,50 @@ export const TESTIMONIALS = [
   { quote: "They feel like part of our team. Proactive, approachable and genuinely invested in our growth.", author: "Andrew P.", company: "Northwest Fabrication" },
   { quote: "As a financial adviser I refer clients to them constantly. Impeccable, and always responsive.", author: "Sophie L.", company: "Meridian Wealth" },
 ];
+
+export const CASE_STUDIES = [
+  {
+    client: "Marine Leisure Ltd",
+    sector: "Boat sales & marina services · Southport",
+    challenge: "Messy spreadsheets, VAT errors and no visibility of cash flow.",
+    solution: "Migrated to Xero, took over bookkeeping & VAT, added monthly management accounts.",
+    before: { label: "Corporation tax bill", value: "£62k" },
+    after: { label: "After planning", value: "£41k" },
+    metric: "£21k saved",
+  },
+  {
+    client: "Northwest Fabrication",
+    sector: "Engineering & manufacturing · Merseyside",
+    challenge: "Rapid growth outpaced their finance function; funding stalled.",
+    solution: "Built rolling forecasts and a lender-ready pack; advised on R&D relief.",
+    before: { label: "Time to accounts", value: "9 wks" },
+    after: { label: "Now", value: "5 days" },
+    metric: "£140k funding raised",
+  },
+  {
+    client: "Harbour Dental Group",
+    sector: "Healthcare · 3 practices, North West",
+    challenge: "Payroll for 40 staff and multi-entity accounts were a monthly headache.",
+    solution: "Fully managed payroll, auto-enrolment and consolidated group reporting.",
+    before: { label: "Payroll errors/yr", value: "18" },
+    after: { label: "Now", value: "0" },
+    metric: "12 hrs/mo saved",
+  },
+];
+
+export const TURNOVER_BANDS = [
+  { id: "u90", label: "Under £90k", base: 55, mult: 1 },
+  { id: "90-250", label: "£90k – £250k", base: 95, mult: 1.4 },
+  { id: "250-500", label: "£250k – £500k", base: 150, mult: 1.9 },
+  { id: "500-1m", label: "£500k – £1m", base: 240, mult: 2.6 },
+  { id: "1m+", label: "£1m+", base: 380, mult: 3.4 },
+];
+
+export const FEE_SERVICES = [
+  { id: "cloud", label: "Cloud Accounting", price: 45 },
+  { id: "bookkeeping", label: "Bookkeeping", price: 60 },
+  { id: "tax", label: "Tax Planning", price: 55 },
+  { id: "payroll", label: "Payroll", price: 35 },
+  { id: "advisory", label: "Business Advisory", price: 90 },
+  { id: "accounts", label: "Year-End Accounts", price: 70 },
+];
