@@ -16,6 +16,8 @@ function makeSessionId() {
 
 const GREETING = "Hello, I'm Fiona, the AI advisor at J A Fell & Co — Chartered Accountants in Southport. We help growing businesses and financial advisers with personal tax, business accounts & tax, payroll, bookkeeping, business formation and FCA/SRA compliance. This panel updates as we chat. How can I help you today?";
 
+const DEFAULT_INTERACTIVE = { turnoverBand: "90-250", painPoints: [], package: [], roiHours: 6 };
+
 export default function AIMode() {
   const auth = useAuth();
   const voice = useVoice();
@@ -23,15 +25,22 @@ export default function AIMode() {
   const [messages, setMessages] = useState([{ role: "assistant", content: GREETING }]);
   const [intake, setIntake] = useState({ business_name: "", contact_name: "", turnover: "", service_interested: "", current_accountant: "" });
   const [canvas, setCanvas] = useState({ view: "welcome", data: {} });
+  const [interactive, setInteractive] = useState(DEFAULT_INTERACTIVE);
   const [sending, setSending] = useState(false);
   const [mobileView, setMobileView] = useState("chat");
   const intakeShownRef = useRef(false);
   const loadedRef = useRef(false);
 
-  const saveState = useCallback((msgs, intk, cnv) => {
+  const saveState = useCallback((msgs, intk, cnv, intr) => {
     if (!auth.user) return;
-    http.post("/advisor/state", { messages: msgs, intake: intk, canvas: cnv }).catch(() => {});
+    http.post("/advisor/state", { messages: msgs, intake: intk, canvas: cnv, interactive: intr }).catch(() => {});
   }, [auth.user]);
+
+  // Persist a canvas interaction (slider drag, pain-point tick, basket toggle).
+  const onInteractive = useCallback((next) => {
+    setInteractive(next);
+    if (auth.user) http.post("/advisor/state", { messages, intake, canvas, interactive: next }).catch(() => {});
+  }, [auth.user, messages, intake, canvas]);
 
   // Restore a signed-in client's saved chat + intake progress once.
   useEffect(() => {
@@ -39,6 +48,7 @@ export default function AIMode() {
     loadedRef.current = true;
     http.get("/advisor/state").then((res) => {
       const s = res.data || {};
+      if (s.interactive && Object.keys(s.interactive).length) setInteractive((p) => ({ ...p, ...s.interactive }));
       if (Array.isArray(s.messages) && s.messages.length > 1) {
         setMessages(s.messages);
         if (s.intake && Object.keys(s.intake).length) setIntake((p) => ({ ...p, ...s.intake }));
@@ -85,23 +95,24 @@ export default function AIMode() {
 
       if (nextCanvas.view !== "service") setMobileView("canvas");
 
-      saveState([...messages, userMsg, assistantMsg], merged, nextCanvas);
+      saveState([...messages, userMsg, assistantMsg], merged, nextCanvas, interactive);
     } catch (e) {
       setMessages((prev) => [...prev, { role: "assistant", content: "Apologies, I'm having trouble connecting right now. Please call us on " + FIRM.phone + "." }]);
     } finally {
       setSending(false);
     }
-  }, [messages, intake, voice, saveState]);
+  }, [messages, intake, interactive, voice, saveState]);
 
   const resetChat = useCallback(() => {
     if (voice.stopSpeaking) voice.stopSpeaking();
     setMessages([{ role: "assistant", content: GREETING }]);
     setIntake({ business_name: "", contact_name: "", turnover: "", service_interested: "", current_accountant: "" });
     setCanvas({ view: "welcome", data: {} });
+    setInteractive(DEFAULT_INTERACTIVE);
     intakeShownRef.current = false;
     sessionId.current = makeSessionId();
     setMobileView("chat");
-    if (auth.user) http.post("/advisor/state", { messages: [], intake: {}, canvas: {} }).catch(() => {});
+    if (auth.user) http.post("/advisor/state", { messages: [], intake: {}, canvas: {}, interactive: {} }).catch(() => {});
     toast.success("Chat reset — ready for a fresh demo.");
   }, [auth.user, voice]);
 
@@ -139,7 +150,7 @@ export default function AIMode() {
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1fr_440px]">
         {/* Canvas (left) */}
         <div className={`min-h-0 ${mobileView === "canvas" ? "block" : "hidden"} lg:block`}>
-          <DynamicCanvas canvas={canvas} intake={intake} setIntake={setIntake} />
+          <DynamicCanvas canvas={canvas} intake={intake} setIntake={setIntake} onSend={onSend} sending={sending} interactive={interactive} onInteractive={onInteractive} />
         </div>
         {/* Chat (right) */}
         <div className={`min-h-0 ${mobileView === "chat" ? "block" : "hidden"} lg:block`}>

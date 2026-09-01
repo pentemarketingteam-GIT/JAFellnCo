@@ -82,6 +82,7 @@ class AdvisorState(BaseModel):
     messages: List[dict] = []
     intake: dict = {}
     canvas: dict = {}
+    interactive: dict = {}
 
 
 # ---------------- Auth helpers ----------------
@@ -199,7 +200,7 @@ You MUST respond with ONLY a single valid JSON object (no markdown, no code fenc
 {
   "reply": "your conversational message to the user",
   "canvas": {
-    "view": "welcome | service | intake | team | quote | scheduler",
+    "view": "welcome | service_tiles | service | pain_points | fee_slider | package_builder | roi | comparison | intake | team | quote | scheduler",
     "data": { ... }
   },
   "intake": {
@@ -220,6 +221,14 @@ Rules for "canvas.view":
 - "team": when the user asks about the team / who they'll work with. data: {"advisor": "name", "role": "...", "bio": "...", "specialties": ["...", "..."]}. The firm's principal is Oliver Grills (Principal, Chartered Accountant and specialist accountant for financial advisers). Present Oliver Grills as the lead advisor.
 - "quote": when you have enough info (turnover + service) to sketch an indicative fee, AND the intake view has already been shown. data: {"items": [{"label":"...","price":"from £XX/mo"}], "total": "from £XXX/mo", "note": "Indicative only, subject to a free consultation."}
 - "scheduler": when the user wants to book a meeting, consultation or call. data: {"note": "a short line encouraging them to pick a slot"}. The visual panel lets them choose an in-person meeting at 40 Hoghton Street or a video call and pick a date and time.
+- "service_tiles": use when the user is exploring, unsure where to start, or asks broadly "what do you offer / how can you help". Shows a grid of tappable service cards they can click to dive into any service. data: {"intro": "a short inviting line, e.g. 'Tap any service to explore it.'"}
+- "pain_points": use when the user sounds stressed, overwhelmed, behind, or when you want to understand their challenges. Shows a selectable grid of common adviser pain points they can tick. data: {"intro": "a short empathetic line"}
+- "fee_slider": use when discussing cost/pricing and the turnover is not yet clearly known, or to let them explore fees interactively. Shows a turnover slider that estimates an indicative monthly fee live. data: {"service": "optional service name to price"}
+- "package_builder": use when the user wants to combine several services or see bundled pricing. Shows a build-your-own basket of services with a running monthly total. data: {}
+- "roi": use when the user mentions spending too much time on admin, bookkeeping, or chasing paperwork. Shows a calculator estimating the time and money they could reclaim. data: {}
+- "comparison": use to build emotional value when the user is hesitant, comparing options, or unsure it's worth switching. Shows a flip card contrasting life now vs life with the firm. data: {"now": ["short pain", "short pain"], "withUs": ["short benefit", "short benefit"]} (optional — sensible defaults exist)
+
+Note: the left canvas is interactive — the user can click service tiles, drag sliders, tick pain points and build packages. When they do, their action arrives as a normal user message (e.g. "Tell me about Payroll Services" or "My main challenges are: chasing invoices, year-end panic"). Respond naturally and advance the conversation, updating the canvas view to match.
 
 Always be helpful and move the conversation toward booking a free consultation at the Southport office or a video call. Never invent tax figures as guarantees; keep quotes clearly indicative.
 """
@@ -376,9 +385,9 @@ async def get_advisor_state(session_token: Optional[str] = Cookie(None),
         raise HTTPException(status_code=401, detail="Not authenticated")
     state = await db.advisor_states.find_one({"user_id": user["user_id"]}, {"_id": 0})
     if not state:
-        return {"messages": [], "intake": {}, "canvas": {}}
+        return {"messages": [], "intake": {}, "canvas": {}, "interactive": {}}
     return {"messages": state.get("messages", []), "intake": state.get("intake", {}),
-            "canvas": state.get("canvas", {})}
+            "canvas": state.get("canvas", {}), "interactive": state.get("interactive", {})}
 
 
 @api_router.post("/advisor/state")
@@ -394,6 +403,7 @@ async def save_advisor_state(payload: AdvisorState, session_token: Optional[str]
             "messages": payload.messages[-40:],
             "intake": payload.intake,
             "canvas": payload.canvas,
+            "interactive": payload.interactive,
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }},
         upsert=True,
