@@ -24,10 +24,7 @@ export default function AIMode() {
   const [intake, setIntake] = useState({ business_name: "", contact_name: "", turnover: "", service_interested: "", current_accountant: "" });
   const [canvas, setCanvas] = useState({ view: "welcome", data: {} });
   const [sending, setSending] = useState(false);
-  const [audioEnabled, setAudioEnabled] = useState(true);
   const [mobileView, setMobileView] = useState("chat");
-  const audioRef = useRef(audioEnabled);
-  audioRef.current = audioEnabled;
   const intakeShownRef = useRef(false);
   const loadedRef = useRef(false);
 
@@ -87,7 +84,6 @@ export default function AIMode() {
       setCanvas(nextCanvas);
 
       if (nextCanvas.view !== "service") setMobileView("canvas");
-      if (audioRef.current) voice.speak(reply);
 
       saveState([...messages, userMsg, assistantMsg], merged, nextCanvas);
     } catch (e) {
@@ -130,8 +126,6 @@ export default function AIMode() {
             sending={sending}
             onSend={onSend}
             voice={voice}
-            audioEnabled={audioEnabled}
-            setAudioEnabled={setAudioEnabled}
             auth={auth}
           />
         </div>

@@ -32,10 +32,19 @@ function StatusBadge({ recording, transcribing, speaking, thinking }) {
   );
 }
 
-export default function ChatPanel({ messages, sending, onSend, voice, audioEnabled, setAudioEnabled, auth }) {
+export default function ChatPanel({ messages, sending, onSend, voice, auth }) {
   const [text, setText] = useState("");
   const scrollRef = useRef(null);
-  const { recording, speaking, transcribing, startRecording, stopRecording, stopSpeaking } = voice;
+  const { recording, speaking, transcribing, startRecording, stopRecording, speak, stopSpeaking } = voice;
+
+  const SUGGESTIONS = [
+    "What services do you offer?",
+    "Tell me about tax planning",
+    "I want to switch accountants",
+    "Get an indicative quote",
+    "Book a free consultation",
+    "Who would I work with?",
+  ];
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -81,14 +90,16 @@ export default function ChatPanel({ messages, sending, onSend, voice, audioEnabl
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => { if (speaking) stopSpeaking(); setAudioEnabled(!audioEnabled); }}
-            data-testid="chat-audio-toggle"
-            title={audioEnabled ? "Mute voice" : "Enable voice"}
-            className={`w-9 h-9 rounded-full flex items-center justify-center border transition-colors ${audioEnabled ? "border-gold/40 text-gold bg-gold/10" : "border-slate-600 text-slate-400"}`}
-          >
-            {audioEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-          </button>
+          {speaking && (
+            <button
+              onClick={stopSpeaking}
+              data-testid="chat-stop-audio"
+              title="Stop voice"
+              className="w-9 h-9 rounded-full flex items-center justify-center border border-gold/40 text-gold bg-gold/10"
+            >
+              <VolumeX size={16} />
+            </button>
+          )}
           {auth.user ? (
             <button onClick={auth.logout} data-testid="chat-user-pill" className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-gold/30 hover:bg-gold/10 transition-colors">
               {auth.user.picture ? (
@@ -124,6 +135,15 @@ export default function ChatPanel({ messages, sending, onSend, voice, audioEnabl
                 }`}
               >
                 {m.content}
+                {m.role === "assistant" && (
+                  <button
+                    onClick={() => (speaking ? stopSpeaking() : speak(m.content))}
+                    data-testid={`chat-listen-${i}`}
+                    className="mt-2 flex items-center gap-1.5 text-xs text-gold/70 hover:text-gold transition-colors"
+                  >
+                    <Volume2 size={12} /> {speaking ? "Stop" : "Listen"}
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}
@@ -143,6 +163,21 @@ export default function ChatPanel({ messages, sending, onSend, voice, audioEnabl
 
       {/* Input */}
       <div className="p-4 border-t border-gold/15 shrink-0">
+        {!recording && (
+          <div className="mb-3 flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin" data-testid="chat-suggestions">
+            {SUGGESTIONS.map((s) => (
+              <button
+                key={s}
+                onClick={() => onSend(s)}
+                disabled={sending}
+                data-testid={`chat-suggestion-${s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
+                className="shrink-0 px-3.5 py-1.5 rounded-full text-xs border border-gold/25 text-slate-200 hover:border-gold/55 hover:bg-gold/10 hover:text-gold transition-colors whitespace-nowrap disabled:opacity-40"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
         {recording && (
           <div className="mb-3 flex items-center justify-center gap-3 text-rose-400 text-sm">
             <Waveform active /> Listening… tap the mic to send
