@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck, Award, MapPin, HeartHandshake } from "lucide-react";
-import { FIRM, TEAM, IMAGES, STATS } from "@/data/firm";
+import { FIRM, IMAGES, STATS } from "@/data/firm";
 
 const values = [
   { icon: HeartHandshake, title: "Relationship-first", text: "You get a named advisor who knows your name, your numbers and your ambitions." },
@@ -61,31 +61,6 @@ export default function About() {
                 <v.icon size={24} className="text-gold mb-4" />
                 <h3 className="font-serif text-lg font-semibold text-white">{v.title}</h3>
                 <p className="text-sm text-slate-400 mt-2 leading-relaxed">{v.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-navy-800/50">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs uppercase tracking-[0.2em] text-gold/90 font-medium">Meet the team</span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-white mt-3">The people behind your numbers</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {TEAM.map((m, i) => (
-              <motion.div key={m.name} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="group rounded-2xl overflow-hidden bg-navy-700/60 border border-gold/15 hover:border-gold/40 transition-colors">
-                <div className="relative h-72 overflow-hidden">
-                  <img src={m.image} alt={m.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/20 to-transparent" />
-                </div>
-                <div className="p-6">
-                  <h3 className="font-serif text-xl font-semibold text-white">{m.name}</h3>
-                  <p className="text-gold text-sm">{m.role}</p>
-                  <p className="text-xs text-slate-500 mt-1 uppercase tracking-wider">{m.specialty}</p>
-                  <p className="text-sm text-slate-400 mt-4 leading-relaxed">{m.bio}</p>
-                </div>
               </motion.div>
             ))}
           </div>
