@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, LayoutGrid } from "lucide-react";
+import { ArrowLeft, LayoutGrid, RotateCcw } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { http } from "@/lib/apiClient";
@@ -93,6 +93,18 @@ export default function AIMode() {
     }
   }, [messages, intake, voice, saveState]);
 
+  const resetChat = useCallback(() => {
+    if (voice.stopSpeaking) voice.stopSpeaking();
+    setMessages([{ role: "assistant", content: GREETING }]);
+    setIntake({ business_name: "", contact_name: "", turnover: "", service_interested: "", current_accountant: "" });
+    setCanvas({ view: "welcome", data: {} });
+    intakeShownRef.current = false;
+    sessionId.current = makeSessionId();
+    setMobileView("chat");
+    if (auth.user) http.post("/advisor/state", { messages: [], intake: {}, canvas: {} }).catch(() => {});
+    toast.success("Chat reset — ready for a fresh demo.");
+  }, [auth.user, voice]);
+
   return (
     <div className="h-screen w-screen flex flex-col bg-navy-900 overflow-hidden">
       {/* Top bar */}
@@ -104,13 +116,23 @@ export default function AIMode() {
           <div className="w-8 h-8 rounded-lg border border-gold/50 flex items-center justify-center font-serif text-gold font-bold text-sm">JF</div>
           <span className="font-serif text-white font-semibold hidden sm:inline">J A Fell &amp; Co · AI Advisor</span>
         </div>
-        <button
-          onClick={() => setMobileView(mobileView === "chat" ? "canvas" : "chat")}
-          data-testid="btn-toggle-view-mode"
-          className="lg:hidden flex items-center gap-2 text-sm text-gold border border-gold/30 rounded-full px-3 py-1.5"
-        >
-          <LayoutGrid size={14} /> {mobileView === "chat" ? "View panel" : "View chat"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={resetChat}
+            data-testid="btn-reset-chat"
+            title="Start a new conversation"
+            className="flex items-center gap-2 text-sm text-slate-300 hover:text-gold border border-gold/30 hover:border-gold/55 rounded-full px-3 py-1.5 transition-colors"
+          >
+            <RotateCcw size={14} /> <span className="hidden sm:inline">Reset</span>
+          </button>
+          <button
+            onClick={() => setMobileView(mobileView === "chat" ? "canvas" : "chat")}
+            data-testid="btn-toggle-view-mode"
+            className="lg:hidden flex items-center gap-2 text-sm text-gold border border-gold/30 rounded-full px-3 py-1.5"
+          >
+            <LayoutGrid size={14} /> {mobileView === "chat" ? "Panel" : "Chat"}
+          </button>
+        </div>
       </div>
 
       {/* Split layout */}
