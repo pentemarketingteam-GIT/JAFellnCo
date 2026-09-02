@@ -371,27 +371,7 @@ function TeamView({ data }) {
   const fallback = TEAM[0];
   const match = TEAM.find((t) => data?.advisor && t.name.toLowerCase().includes(String(data.advisor).toLowerCase().split(" ")[0])) || fallback;
   const specialties = data?.specialties || [match.specialty];
-  return (
-    <motion.div key="team" {...wrap} className="h-full">
-      <span className="text-xs uppercase tracking-[0.2em] text-gold/90">Your advisor</span>
-      <div className="mt-4 rounded-2xl overflow-hidden border border-gold/20">
-        <div className="relative h-64">
-          <img src={match.image} alt={match.name} className="w-full h-full object-cover object-top" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/20 to-transparent" />
-          <div className="absolute bottom-4 left-5">
-            <div className="font-serif text-2xl font-semibold text-white">{data?.advisor || match.name}</div>
-            <div className="text-gold text-sm">{data?.role || match.role}</div>
-          </div>
-        </div>
-      </div>
-      <p className="text-slate-300 mt-5 leading-relaxed">{data?.bio || match.bio}</p>
-      <div className="flex flex-wrap gap-2 mt-5">
-        {specialties.map((s, i) => (
-          <span key={i} className="px-3 py-1.5 rounded-full text-xs bg-gold/10 border border-gold/25 text-gold/90 font-mono">{s}</span>
-        ))}
-      </div>
-    </motion.div>
-  );
+  return null; // Team profile view removed to avoid presenting non-verified detail.
 }
 
 function QuoteView({ data }) {
@@ -620,7 +600,6 @@ export default function DynamicCanvas({ canvas, intake, setIntake, onSend, sendi
           {view === "package_builder" && <PackageBuilder interactive={interactive} onInteractive={onInteractive} onSend={onSend} sending={sending} />}
           {view === "roi" && <RoiCalc interactive={interactive} onInteractive={onInteractive} onSend={onSend} sending={sending} />}
           {view === "comparison" && <Comparison data={data} onSend={onSend} sending={sending} />}
-          {view === "team" && <TeamView data={data} />}
           {view === "quote" && <QuoteView data={data} />}
           {view === "scheduler" && <SchedulerView data={data} intake={intake} />}
           {view === "intake" && <IntakeView intake={intake} setIntake={setIntake} />}

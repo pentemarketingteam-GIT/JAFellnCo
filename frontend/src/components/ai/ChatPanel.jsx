@@ -43,7 +43,6 @@ export default function ChatPanel({ messages, sending, onSend, voice, auth }) {
     "I want to switch accountants",
     "Get an indicative quote",
     "Book a free consultation",
-    "Who would I work with?",
   ];
 
   useEffect(() => {

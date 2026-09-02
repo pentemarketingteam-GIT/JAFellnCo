@@ -78,7 +78,7 @@ export const TEAM = [
     role: "Principal",
     specialty: "Chartered Accountant · Adviser specialist",
     bio: "Oliver leads J A Fell & Co, a modern firm of Chartered Accountants blending traditional values with forward-thinking strategies. He works closely with growing businesses and financial advisers across the UK — focused on clarity, proactive planning and growth.",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxleGVjdXRpdmUlMjBwb3J0cmFpdCUyMGFjY291bnRhbnQlMjBhZHZpc29yJTIwc3VpdHxlbnwwfHx8fDE3ODgyOTI5MDN8MA&ixlib=rb-4.1.0&q=85",
+    image: "/oliver-grills.jpg",
   },
 ];
 

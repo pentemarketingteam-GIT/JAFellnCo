@@ -26,12 +26,21 @@ Build a website for J A Fell & Co, a Chartered Accountancy firm in Southport, UK
 - Forms: /api/intake and /api/contact persist to MongoDB.
 - Tested: backend 100% (9 pytest), frontend 95%+ (all flows verified incl. intake auto-fill).
 
+## Implemented (2026-09 update — Interactive canvas + accuracy)
+- AI canvas now has 6 NEW bi-directional interactive views (AI picks per message, actions send messages back to Fiona):
+  - service_tiles (tap-to-ask), pain_points (multi-select), fee_slider (live £ estimate), package_builder (basket + running total), roi (time/money reclaimed), comparison (flip card).
+  - Selections (turnover band, pain points, package, roi hours) persist for signed-in users via AdvisorState.interactive (GET/POST /api/advisor/state).
+  - Animated transitions via AnimatePresence mode="wait". Tested 10/10 (iteration_4.json).
+- REMOVED the "team" canvas view and the "Who would I work with?" suggestion chip. Asking about the team now yields a factual text reply about Oliver Grills only (canvas stays on welcome/service_tiles). TeamView returns null.
+- System prompt hardened with STRICT ACCURACY / no-hallucination guardrails: only stated facts; never invent founding dates, experience, client/staff counts, awards, colleagues, testimonials, or guaranteed tax figures; fees always indicative.
+
 ## Backlog
-- P1: Meeting scheduler / document checklist canvas view.
-- P1: Persist logged-in user's chat + intake progress server-side across sessions.
-- P2: Fee calculator preview on marketing Home.
-- P2: Explicit CORS origins for stricter cookie handling.
-- P2: Admin view of submitted intakes/contacts.
+- P1: Financial Advisers dedicated page (niche pain points + free guide download).
+- P1: Calendly inline embed (calendly.com/olivergrills/discovery-call) inside AI scheduler.
+- P2: Real client testimonials (replace placeholders once provided).
+- P2: Free guide lead magnet ("7 ways to keep more of what you earn") with email capture.
+- P2: Email notification on intake/contact/meeting submissions (Resend/SendGrid).
+- P2: Admin view of submitted intakes/contacts/leads (incl. interactive selections).
 
 ## Next Tasks
-- Await user feedback on branding/content, then extend AI canvas views and add scheduler.
+- Await user direction; likely Financial Advisers page or Calendly embed next.
